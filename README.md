@@ -15,7 +15,7 @@ composer require jdarkins/pulse-throttled
 Add this to your Pulse dashboard view (usually `resources/views/pulse/dashboard.blade.php`):
 
 ```blade
-<livewire:pulse.throttled-requests cols="12" rows="8" />
+<livewire:pulse.throttled-requests cols="full" rows="2" />
 ```
 
 That's it! The middleware will be automatically registered.
