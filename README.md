@@ -63,8 +63,8 @@ Once installed, the package will automatically track requests that receive a 429
 ```php
 // config/pulse-throttled.php
 return [
-    'enabled' => env('PULSE_THROTTLED_ENABLED', true),                    // Enable/disable tracking
-    'auto_register_middleware' => env('PULSE_THROTTLED_AUTO_MIDDLEWARE', true), // Auto-register middleware
+    'enabled' => env('PULSE_ENABLED', true) && env('PULSE_THROTTLED_ENABLED', true), // Package can be disabled manually or via Pulse's global toggle
+    'auto_register_middleware' => env('PULSE_THROTTLED_AUTO_MIDDLEWARE', true),      // Auto-register middleware
     'display' => [
         'max_entries' => 10,            // Max IPs/URLs to show in lists
         'recent_throttles_limit' => 20, // Max recent events to show
@@ -83,6 +83,8 @@ PULSE_THROTTLED_ENABLED=false
 # Disable automatic middleware registration (register manually instead)
 PULSE_THROTTLED_AUTO_MIDDLEWARE=false
 ```
+
+**Note**: This package respects Laravel Pulse's global `PULSE_ENABLED` setting. If Pulse is disabled globally, this package will also be disabled.
 
 ## Requirements
 
