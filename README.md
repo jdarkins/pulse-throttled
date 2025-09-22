@@ -2,6 +2,8 @@
 
 A Laravel Pulse card to track users who are being throttled by your Rate Limiting.
 
+![Throttled Requests Card Example](assets/pulse-throttled-example.png)
+
 ## Installation
 
 1. Install the package via Composer:
