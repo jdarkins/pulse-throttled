@@ -1,6 +1,13 @@
 {
     "name": "jdarkins/pulse-throttled",
     "description": "A Laravel Pulse card to track users & URL's that are being throttled by your Rate Limiters",
+    "keywords": [
+        "laravel",
+        "pulse",
+        "laravel-pulse",
+        "throttle",
+        "rate limit"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [
