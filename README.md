@@ -42,27 +42,18 @@ The dashboard displays:
 - **Most active IPs** and their throttling patterns
 - **Recent throttling events** with timestamps
 
-## Configuration (Optional)
+## Additional Configuration
 
-Configure the recorder in your `config/pulse.php`:
+If you want to have more control over the recorder, you can apply the following configuration options to your recorder in `config/pulse.php`:
 
 ```php
 'recorders' => [
     \Jdarkins\PulseThrottled\Pulse\Recorders\ThrottledRecorder::class => [
         'enabled' => env('PULSE_THROTTLED_ENABLED', true),
         'sample_rate' => env('PULSE_THROTTLED_SAMPLE_RATE', 1),
+        'display_limit' => env('PULSE_THROTTLED_DISPLAY_LIMIT', 20),
     ],
 ],
-```
-
-Disable with environment variables:
-
-```bash
-# Disable only throttled request tracking
-PULSE_THROTTLED_ENABLED=false
-
-# Reduce sampling (0.1 = 10% of throttled requests)
-PULSE_THROTTLED_SAMPLE_RATE=0.1
 ```
 
 ## Requirements

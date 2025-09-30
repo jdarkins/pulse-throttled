@@ -15,18 +15,9 @@
         "laravel/pulse": "^1.0",
         "livewire/livewire": "^3.0"
     },
-    "require-dev": {
-        "orchestra/testbench": "^8.0|^9.0",
-        "phpunit/phpunit": "^10.0"
-    },
     "autoload": {
         "psr-4": {
             "Jdarkins\\PulseThrottled\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Jdarkins\\PulseThrottled\\Tests\\": "tests/"
         }
     },
     "extra": {
