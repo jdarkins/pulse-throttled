@@ -1,3 +1,9 @@
+<p align="center">
+    <a href="https://packagist.org/packages/jdarkins/pulse-throttled"><img src="https://img.shields.io/packagist/dt/jdarkins/pulse-throttled" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/jdarkins/pulse-throttled"><img src="https://img.shields.io/packagist/v/jdarkins/pulse-throttled" alt="Latest Stable Version"></a>
+    <a href="https://packagist.org/packages/jdarkins/pulse-throttled"><img src="https://img.shields.io/packagist/l/jdarkins/pulse-throttled" alt="License"></a>
+</p>
+
 # Laravel Pulse Throttled Requests
 
 Track throttled requests in your Laravel application with a clean Pulse dashboard card.
