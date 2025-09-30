@@ -16,14 +16,10 @@ class ThrottledTracker
     {
         $response = $next($request);
         
-        // Only record when someone gets throttled (429 status) AND package is enabled
-        if ($response->getStatusCode() === 429 && config('pulse-throttled.enabled', true)) {
-            $this->recorder->recordThrottle([
-                'ip' => $request->ip(),
-                'path' => $request->path(),
-                'method' => $request->method(),
-                'limiter_name' => $this->getLimiterName($request),
-            ]);
+        // Only record when someone gets throttled (429 status)
+        if ($response->getStatusCode() === 429) {
+            $limiterName = $this->getLimiterName($request);
+            $this->recorder->recordThrottledRequest($request, $limiterName);
         }
         
         return $response;
