@@ -18,142 +18,136 @@
     <x-pulse::scroll :expand="$expand" wire:poll.5s="">
         @if($throttledData['total_throttles'] > 0)
             <div class="grid grid-cols-3 gap-3 mx-px mb-px">
-                    {{-- Left section: Tabbed IPs and URLs --}}
-                    <div class="col-span-1 mr-2">
-                        {{-- Tab navigation --}}
-                        <div class="flex mb-4">
-                            <button 
-                                wire:click="switchTab('urls')"
-                                class="flex-1 mr-2 py-2 text-sm font-medium text-center  {{ $activeTab === 'urls' ? "bg-gray-50 dark:bg-gray-800 rounded" : "" }}">
-                                Most Throttled URLs
-                            </button>
-                            <button 
-                                wire:click="switchTab('ips')"
-                                class="flex-1 ml-2 py-2 text-sm font-medium text-center {{ $activeTab === "ips" ? "bg-gray-50 dark:bg-gray-800 rounded" : "" }}">
-                                Most Throttled IPs
-                            </button>
-                        </div>
-                        
-                        {{-- Tab content --}}
-                        <div>
-                            @if($activeTab === 'urls')
-                                {{-- URLs tab content --}}
-                                <div>
-                                    <x-pulse::table>
-                                        <colgroup>
-                                            <col width="100%" />
-                                            <col width="0%" />
-                                            <col width="0%" />
-                                        </colgroup>
-                                        <x-pulse::thead>
-                                            <tr>
-                                                <x-pulse::th>URL Path</x-pulse::th>
-                                                <x-pulse::th class="text-right">Last</x-pulse::th>
-                                                <x-pulse::th class="text-right">Throttles</x-pulse::th>
-                                            </tr>
-                                        </x-pulse::thead>
-                                        <tbody>
-                                            @foreach($throttledData['url_stats'] as $url)
-                                                <tr wire:key="{{ $url['path'] }}-spacer" class="h-2 first:h-0"></tr>
-                                                <tr wire:key="{{ $url['path'] }}-row">
-                                                    <x-pulse::td class="max-w-[1px]">
-                                                        <code class="block text-xs text-gray-900 dark:text-gray-100 truncate font-bold" title="/{{ $url['path'] }}">
-                                                            /{{ $url['path'] }}
-                                                        </code>
-                                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                                            {{ $url['ips'] }} different IPs
-                                                        </p>
-                                                    </x-pulse::td>
-                                                    <x-pulse::td numeric class="text-gray-700 dark:text-gray-300 font-bold text-xs">
-                                                        {{ \Carbon\Carbon::createFromTimestamp($url['last_throttled'])->diffForHumans() }}
-                                                    </x-pulse::td>
-                                                    <x-pulse::td numeric class="text-gray-700 dark:text-gray-300 font-bold">
-                                                        {{ number_format($url['throttles']) }}
-                                                    </x-pulse::td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </x-pulse::table>
-                                </div>
-                            @else
-                                {{-- IPs tab content --}}
-                                <div>
-                                    <x-pulse::table>
-                                        <colgroup>
-                                            <col width="100%" />
-                                            <col width="0%" />
-                                            <col width="0%" />
-                                        </colgroup>
-                                        <x-pulse::thead>
-                                            <tr>
-                                                <x-pulse::th>IP Address</x-pulse::th>
-                                                <x-pulse::th class="text-right">Last</x-pulse::th>
-                                                <x-pulse::th class="text-right">Throttles</x-pulse::th>
-                                            </tr>
-                                        </x-pulse::thead>
-                                        <tbody>
-                                            @foreach($throttledData['ip_stats'] as $ip)
-                                                <tr wire:key="{{ $ip['ip'] }}-spacer" class="h-2 first:h-0"></tr>
-                                                <tr wire:key="{{ $ip['ip'] }}-row">
-                                                    <x-pulse::td class="max-w-[1px]">
-                                                        <code class="block text-xs text-gray-900 dark:text-gray-100 font-bold" title="{{ $ip['ip'] }}">
-                                                            {{ $ip['ip'] }}
-                                                        </code>
-                                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                                            {{ $ip['urls'] }} different URLs
-                                                        </p>
-                                                    </x-pulse::td>
-                                                    <x-pulse::td numeric class="text-gray-700 dark:text-gray-300 font-bold text-xs">
-                                                        {{ \Carbon\Carbon::createFromTimestamp($ip['last_throttled'])->diffForHumans() }}
-                                                    </x-pulse::td>
-                                                    <x-pulse::td numeric class="text-gray-700 dark:text-gray-300 font-bold">
-                                                        {{ number_format($ip['throttles']) }}
-                                                    </x-pulse::td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </x-pulse::table>
-                                </div>
-                            @endif
-                        </div>
+                <div class="col-span-1 mr-2">
+                    <div class="flex mb-4">
+                        <button 
+                            wire:click="switchTab('urls')"
+                            class="flex-1 mr-2 py-2 text-sm font-medium text-center  {{ $activeTab === 'urls' ? "bg-gray-50 dark:bg-gray-800 rounded" : "" }}">
+                            Most Throttled URLs
+                        </button>
+                        <button 
+                            wire:click="switchTab('ips')"
+                            class="flex-1 ml-2 py-2 text-sm font-medium text-center {{ $activeTab === "ips" ? "bg-gray-50 dark:bg-gray-800 rounded" : "" }}">
+                            Most Throttled IPs
+                        </button>
                     </div>
                     
-                    {{-- Right section: Recent blocks table --}}
-                    <div class="col-span-2 ml-2">
-                        <h4 class="text-lg font-medium mb-3">Recent Blocks</h4>
-                        <div>
-                    <table class="w-full text-sm">
-                        <thead class="bg-gray-100 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-3 py-2 text-left">Time</th>
-                                <th class="px-3 py-2 text-left">IP Address</th>
-                                <th class="px-3 py-2 text-left">Method</th>
-                                <th class="px-3 py-2 text-left">Path</th>
-                                <th class="px-3 py-2 text-left">Limiter</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($throttledData['recent_throttles'] as $throttle)
-                                <tr class="border-b dark:border-gray-700">
-                                    <td class="px-3 py-2">{{ \Carbon\Carbon::createFromTimestamp($throttle['timestamp'])->format('H:i:s') }}</td>
-                                    <td class="px-3 py-2 font-mono">{{ $throttle['ip'] }}</td>
-                                    <td class="px-3 py-2">
-                                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
-                                            {{ $throttle['method'] }}
-                                        </span>
-                                    </td>
-                                    <td class="px-3 py-2 font-mono">/{{ $throttle['path'] }}</td>
-                                    <td class="px-3 py-2">
-                                        <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">
-                                            {{ $throttle['limiter_name'] }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                        </div>
+                    <div>
+                        @if($activeTab === 'urls')
+                            <div>
+                                <x-pulse::table>
+                                    <colgroup>
+                                        <col width="100%" />
+                                        <col width="0%" />
+                                        <col width="0%" />
+                                    </colgroup>
+                                    <x-pulse::thead>
+                                        <tr>
+                                            <x-pulse::th>URL Path</x-pulse::th>
+                                            <x-pulse::th class="text-right">Last</x-pulse::th>
+                                            <x-pulse::th class="text-right">Throttles</x-pulse::th>
+                                        </tr>
+                                    </x-pulse::thead>
+                                    <tbody>
+                                        @foreach($throttledData['url_stats'] as $url)
+                                            <tr wire:key="{{ $url['path'] }}-spacer" class="h-2 first:h-0"></tr>
+                                            <tr wire:key="{{ $url['path'] }}-row">
+                                                <x-pulse::td class="max-w-[1px]">
+                                                    <code class="block text-xs text-gray-900 dark:text-gray-100 truncate font-bold" title="/{{ $url['path'] }}">
+                                                        /{{ $url['path'] }}
+                                                    </code>
+                                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                                        {{ $url['ips'] }} different IPs
+                                                    </p>
+                                                </x-pulse::td>
+                                                <x-pulse::td numeric class="text-gray-700 dark:text-gray-300 font-bold text-xs">
+                                                    {{ \Carbon\Carbon::createFromTimestamp($url['last_throttled'])->diffForHumans() }}
+                                                </x-pulse::td>
+                                                <x-pulse::td numeric class="text-gray-700 dark:text-gray-300 font-bold">
+                                                    {{ number_format($url['throttles']) }}
+                                                </x-pulse::td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </x-pulse::table>
+                            </div>
+                        @else
+                            <div>
+                                <x-pulse::table>
+                                    <colgroup>
+                                        <col width="100%" />
+                                        <col width="0%" />
+                                        <col width="0%" />
+                                    </colgroup>
+                                    <x-pulse::thead>
+                                        <tr>
+                                            <x-pulse::th>IP Address</x-pulse::th>
+                                            <x-pulse::th class="text-right">Last</x-pulse::th>
+                                            <x-pulse::th class="text-right">Throttles</x-pulse::th>
+                                        </tr>
+                                    </x-pulse::thead>
+                                    <tbody>
+                                        @foreach($throttledData['ip_stats'] as $ip)
+                                            <tr wire:key="{{ $ip['ip'] }}-spacer" class="h-2 first:h-0"></tr>
+                                            <tr wire:key="{{ $ip['ip'] }}-row">
+                                                <x-pulse::td class="max-w-[1px]">
+                                                    <code class="block text-xs text-gray-900 dark:text-gray-100 font-bold" title="{{ $ip['ip'] }}">
+                                                        {{ $ip['ip'] }}
+                                                    </code>
+                                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                                        {{ $ip['urls'] }} different URLs
+                                                    </p>
+                                                </x-pulse::td>
+                                                <x-pulse::td numeric class="text-gray-700 dark:text-gray-300 font-bold text-xs">
+                                                    {{ \Carbon\Carbon::createFromTimestamp($ip['last_throttled'])->diffForHumans() }}
+                                                </x-pulse::td>
+                                                <x-pulse::td numeric class="text-gray-700 dark:text-gray-300 font-bold">
+                                                    {{ number_format($ip['throttles']) }}
+                                                </x-pulse::td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </x-pulse::table>
+                            </div>
+                        @endif
                     </div>
+                </div>
+                
+                <div class="col-span-2 ml-2">
+                    <h4 class="text-lg font-medium mb-3">Recent Blocks</h4>
+                    <div>
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-100 dark:bg-gray-700">
+                        <tr>
+                            <th class="px-3 py-2 text-left">Time</th>
+                            <th class="px-3 py-2 text-left">IP Address</th>
+                            <th class="px-3 py-2 text-left">Method</th>
+                            <th class="px-3 py-2 text-left">Path</th>
+                            <th class="px-3 py-2 text-left">Limiter</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($throttledData['recent_throttles'] as $throttle)
+                            <tr class="border-b dark:border-gray-700">
+                                <td class="px-3 py-2">{{ \Carbon\Carbon::createFromTimestamp($throttle['timestamp'])->format('H:i:s') }}</td>
+                                <td class="px-3 py-2 font-mono">{{ $throttle['ip'] }}</td>
+                                <td class="px-3 py-2">
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                                        {{ $throttle['method'] }}
+                                    </span>
+                                </td>
+                                <td class="px-3 py-2 font-mono">/{{ $throttle['path'] }}</td>
+                                <td class="px-3 py-2">
+                                    <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">
+                                        {{ $throttle['limiter_name'] }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                    </div>
+                </div>
             </div>
         @else
             @if($isDisabled)

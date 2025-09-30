@@ -1,98 +1,72 @@
-# Laravel Pulse Throttled Requests Tracker
+<p align="center">
+    <a href="https://packagist.org/packages/jdarkins/pulse-throttled"><img src="https://img.shields.io/packagist/dt/jdarkins/pulse-throttled" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/jdarkins/pulse-throttled"><img src="https://img.shields.io/packagist/v/jdarkins/pulse-throttled" alt="Latest Stable Version"></a>
+    <a href="https://packagist.org/packages/jdarkins/pulse-throttled"><img src="https://img.shields.io/packagist/l/jdarkins/pulse-throttled" alt="License"></a>
+</p>
 
-A Laravel Pulse card to track users who are being throttled by your Rate Limiting.
+# Laravel Pulse Throttled Requests
+
+Track throttled requests in your Laravel application with a clean Pulse dashboard card.
 
 ![Throttled Requests Card Example](assets/pulse-throttled-example.png)
 
 ## Installation
 
-1. Install the package via Composer:
+Install via Composer:
 
 ```bash
 composer require jdarkins/pulse-throttled
 ```
 
+## Setup
+
+1. **Add the recorder to your Pulse configuration:**
+
+```php
+// config/pulse.php
+'recorders' => [
+    // ... other recorders
+    \Jdarkins\PulseThrottled\Pulse\Recorders\ThrottledRecorder::class => [],
+],
+```
+
 2. **Add the card to your Pulse dashboard:**
 
-Add this to your Pulse dashboard view (usually `resources/views/pulse/dashboard.blade.php`):
-
 ```blade
+<!-- resources/views/pulse/dashboard.blade.php -->
 <livewire:pulse.throttled-requests cols="full" rows="2" />
 ```
 
-That's it! The middleware will be automatically registered.
+That's it! The package will automatically start tracking HTTP 429 responses.
 
-### Manual Middleware Registration (Optional)
+## What It Shows
 
-If you prefer to manually register the middleware, you can disable auto-registration and add it yourself:
+The dashboard displays:
 
-1. Set `PULSE_THROTTLED_AUTO_MIDDLEWARE=false` in your `.env` file
-2. Add the middleware to `app/Http/Kernel.php`:
+- **Total throttles** and **unique IPs** affected
+- **Most throttled URLs** with request counts  
+- **Most active IPs** and their throttling patterns
+- **Recent throttling events** with timestamps
 
-```php
-// app/Http/Kernel.php
-protected $middleware = [
-    // ... other middleware
-    \Jdarkins\PulseThrottled\Http\Middleware\ThrottledTracker::class,
-];
-```
+## Additional Configuration
 
-## Optional Configuration
-
-Publish the configuration file (optional):
-
-```bash
-php artisan vendor:publish --tag=pulse-throttled-config
-```
-
-Publish the views for customization (optional):
-
-```bash
-php artisan vendor:publish --tag=pulse-throttled-views
-```
-
-## Usage
-
-Once installed, the package will automatically track requests that receive a 429 (Too Many Requests) response from your throttle middleware. The Pulse card will show:
-
-- Most throttled URLs
-- Most throttled IP addresses  
-- Recent throttling events
-- Total throttle count and unique IPs
-
-### Configuration Options
+If you want to have more control over the recorder, you can apply the following configuration options to your recorder in `config/pulse.php`:
 
 ```php
-// config/pulse-throttled.php
-return [
-    'enabled' => env('PULSE_ENABLED', true) && env('PULSE_THROTTLED_ENABLED', true), // Package can be disabled manually or via Pulse's global toggle
-    'auto_register_middleware' => env('PULSE_THROTTLED_AUTO_MIDDLEWARE', true),      // Auto-register middleware
-    'display' => [
-        'max_entries' => 10,            // Max IPs/URLs to show in lists
-        'recent_throttles_limit' => 20, // Max recent events to show
+'recorders' => [
+    \Jdarkins\PulseThrottled\Pulse\Recorders\ThrottledRecorder::class => [
+        'enabled' => env('PULSE_THROTTLED_ENABLED', true),
+        'sample_rate' => env('PULSE_THROTTLED_SAMPLE_RATE', 1),
+        'display_limit' => env('PULSE_THROTTLED_DISPLAY_LIMIT', 20),
     ],
-];
+],
 ```
-
-### Environment Variables
-
-Add these to your `.env` file to customize behavior:
-
-```bash
-# Disable throttle tracking entirely
-PULSE_THROTTLED_ENABLED=false
-
-# Disable automatic middleware registration (register manually instead)
-PULSE_THROTTLED_AUTO_MIDDLEWARE=false
-```
-
-**Note**: This package respects Laravel Pulse's global `PULSE_ENABLED` setting. If Pulse is disabled globally, this package will also be disabled.
 
 ## Requirements
 
 - PHP ^8.1
-- Laravel ^10.0|^11.0
-- Laravel Pulse ^1.0
+- Laravel ^11.0|^12.0
+- Laravel Pulse ^1.0  
 - Livewire ^3.0
 
 ## License
